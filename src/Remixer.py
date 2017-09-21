@@ -42,6 +42,7 @@ class Remixer:
 		
 		return intro
 	
+	
 	def generate_verse(self):
 		verse = AudioSegment.empty()
 		silence = AudioSegment.silent(len(self.long_sounds[0]))
