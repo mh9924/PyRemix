@@ -1,2 +1,2 @@
 # PyRemix
-Generates classic sparta remixes of soundbytes
+Generates classic "sparta remixes" of soundbytes
