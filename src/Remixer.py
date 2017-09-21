@@ -13,19 +13,21 @@ class Remixer:
 		sample_starts = [sample1_start, sample2_start, sample3_start]
 		
 		for start in sample_starts:
-			self.main_sounds.append(self.sample[start:start+107])
+			self.main_sounds.append(self.sample[start:start+107.1])
 			self.long_sounds.append(self.sample[start:start+429])
-			
-		self.remix()
 		
 		
-	def remix(self):	
+	def remix(self, epicness=False):	
 		song = AudioSegment.silent(60)
 		song += self.generate_intro()
 		song += self.generate_hook()*2
 		song += self.generate_verse()*6
 		song += self.generate_hook()*4
-		
+		if epicness:
+			epicness1 = self.generate_hook('1   1 332 1 1 11  1 1 113 3 22221 3 1 332 1 1 111 11111111111111')
+			epicness2 = self.generate_hook('                                            3 3     3  3 3333 33')
+			song += epicness1.overlay(epicness2)
+		song += self.generate_hook()*4
 		song = self.bg_music.overlay(song)
 		song.export("remix.wav", format="wav")
 		
@@ -40,7 +42,6 @@ class Remixer:
 		
 		return intro
 	
-
 	def generate_verse(self):
 		verse = AudioSegment.empty()
 		silence = AudioSegment.silent(len(self.long_sounds[0]))
@@ -73,7 +74,7 @@ def main():
 	sample3_start = 1000 * float(input("Enter the start position of the third sound to use: "))
 	
 	r = Remixer(sys.argv[1], sample1_start, sample2_start, sample3_start)
-
+	r.remix(True)
 
 if __name__ == '__main__':
 	main()
