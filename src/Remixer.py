@@ -24,9 +24,7 @@ class Remixer:
 		song += self.generate_verse()*6
 		song += self.generate_hook()*4
 		if epicness:
-			epicness1 = self.generate_hook('1   1 332 1 1 11  1 1 113 3 22221 3 1 332 1 1 111 11111111111111')
-			epicness2 = self.generate_hook('                                            3 3     3  3 3333 33')
-			song += epicness1.overlay(epicness2)
+			song += self.generate_epicness()
 		song += self.generate_hook()*4
 		song = self.bg_music.overlay(song)
 		if export is not None:
@@ -35,36 +33,37 @@ class Remixer:
 		return song.raw_data
 		
 		
-	def generate_intro(self):
-		intro = AudioSegment.empty()
-		silence = AudioSegment.silent(len(self.long_sounds[0]))
-		for sound in self.long_sounds:
-			intro += sound
-			intro += silence
-		intro += silence*2
-		
-		return intro
-	
-	def generate_verse(self):
-		verse = AudioSegment.empty()
-		silence = AudioSegment.silent(len(self.long_sounds[0]))
-		for sound in self.long_sounds:
-			verse += sound	
-		verse += self.long_sounds[2]
-		
-		return verse
-		
-	
-	def generate_hook(self, pattern='11 11 111 1 1 11222 2 222 222 2 '):
-		hook = AudioSegment.empty()
+	def generate_section(self, pattern, long=False):
+		section = AudioSegment.empty()	
 		silence = AudioSegment.silent(len(self.main_sounds[0]))
+		if long:
+			silence = AudioSegment.silent(len(self.long_sounds[0]))
 		for c in pattern:
 			if c == ' ':
-				hook += silence
+				section += silence
 			else:
-				hook += self.main_sounds[int(c)-1]
+				section += self.long_sounds[int(c)-1] if long else self.main_sounds[int(c)-1]
 				
-		return hook
+		return section
+		
+	
+	def generate_intro(self):
+		return self.generate_section('1 2 3   ', True)
+	
+	
+	def generate_verse(self):
+		return self.generate_section('1233', True)
+		
+		
+	def generate_hook(self):
+		return self.generate_section('11 11 111 1 1 11222 2 222 222 2 ')
+	
+	
+	def generate_epicness(self):
+		epicness1 = self.generate_section('1   1 332 1 1 11  1 1 113 3 22221 3 1 332 1 1 111 11111111111111')
+		epicness2 = self.generate_section('                                            3 3     3  3 3333 33')
+		
+		return epicness1.overlay(epicness2)
 		
 			
 def main():
